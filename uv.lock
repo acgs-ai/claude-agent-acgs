@@ -392,7 +392,7 @@ typing = [
 
 [package.metadata]
 requires-dist = [
-    { name = "acgs-lite", specifier = ">=3.0.1,<4" },
+    { name = "acgs-lite", specifier = ">=3.0.1,<5" },
     { name = "claude-agent-sdk", specifier = ">=0.2.119,<0.3" },
 ]
 
