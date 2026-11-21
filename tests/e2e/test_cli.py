@@ -227,7 +227,12 @@ async def test_sub_agent_tool_calls_are_checked(tmp_path: Path) -> None:
         {
             "tool": "Task",
             "id": "toolu_task",
-            "input": {"description": "Clean", "prompt": "Clean up.", "subagent_type": "general-purpose"},
+            "input": {
+                "description": "Clean",
+                "prompt": "Clean up.",
+                "subagent_type": "general-purpose",
+                "run_in_background": False,
+            },
         },
         {
             "tool": "Bash",

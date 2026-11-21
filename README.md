@@ -36,11 +36,36 @@ Requires Python 3.10 or later, `claude-agent-sdk>=0.2.119,<0.3` and `acgs-lite>=
 Claude Code CLI; 0.2.119 bundles CLI 2.1.210. Tested against claude-agent-sdk 0.2.119 and 0.2.173 (the latest
 release when this version was made). The SDK releases often, so the upper bound is the next minor version.
 
+### Compatibility
+
+| Component | Supported range | 0.2.0 validation |
+|---|---|---|
+| acgs-lite | `>=3.0.1,<5` | 4.0.0 tested via `uv.lock` and the default environment; 3.0.1 floor tested by the CI `test-min` job |
+| Claude Agent SDK | `>=0.2.119,<0.3` | 0.2.119 minimum and 0.2.173 locked environment |
+| Python | `>=3.10` | CI covers 3.10 through 3.14; strict typing targets 3.10 |
+
+The adapter formats tool arguments as text and calls `GovernanceEngine.validate`. It does not select the
+production authorization profile or issue signed receipts. Bytes and bytearray values remain scalar text for
+rule matching; this does not make them JSON-native payloads for other acgs-lite APIs.
+
 acgs-lite 4 is a major release. Its production profile of `GovernedCallable` requires an Ed25519
 receipt signer, governed payloads are JSON-only, and `GovernedAgent` no longer passes per-call keyword arguments to
 rule conditions (see the [acgs-lite changelog](https://github.com/acgs-ai/acgs-lite/blob/main/CHANGELOG.md)). This
 adapter works with both majors, but a fresh environment installs the newest version allowed. To stay on 3.x, also
 require `"acgs-lite<4"`, for example `pip install claude-agent-acgs "acgs-lite<4"`.
+
+### Offline deny-and-audit example
+
+Run [examples/deny_and_audit.py](examples/deny_and_audit.py) without an API key or network access:
+
+```bash
+uv run --no-sync python examples/deny_and_audit.py
+```
+
+Two scripted `PreToolUse` events are fed straight to the public `ACGSHook` callback, built with
+`grant_allowed=True`; no model or SDK client runs. Only the allowed note executes. The example then prints both hook decisions, including the
+tool name, verdict and reason. It uses no Claude Code CLI. This in-memory application trail omits argument values;
+it is not a signed receipt or a durable engine audit log.
 
 ## Usage
 
