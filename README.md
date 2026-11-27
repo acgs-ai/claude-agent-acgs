@@ -165,10 +165,12 @@ Read: no decision. Claude Code's normal permission flow applies.
    ```
 
    Each input leaf is one `path: value` line (nested values use `a.b[0].c` paths), so both field names and values
-   are visible to rules. Whitespace inside values is collapsed. Identifiers in `snake_case`, `kebab-case` or
-   `camelCase` (the tool name, field names and single-token string values) are repeated as plain words on the
-   `normalized:` line, so the keyword `mcp deploy run job` matches that MCP tool. Pass `tool_call_formatter=` to
-   use a different representation.
+   are visible to rules. Whitespace inside values is collapsed. A value that contains hidden control characters
+   is also rendered with them removed and with them as spaces. A value with more than one whitespace control
+   character (vertical tab, form feed, U+001C to U+001F, NEL) is denied. Identifiers in `snake_case`,
+   `kebab-case` or `camelCase` (the tool name, field names and single-token string values) are repeated as plain
+   words on the `normalized:` line, so the keyword `mcp deploy run job` matches that MCP tool. Pass
+   `tool_call_formatter=` to use a different representation.
 
 2. The text is validated with `acgs_lite.GovernanceEngine.validate` against the constitution
    (`Constitution.default()` unless you pass one).
